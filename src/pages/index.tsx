@@ -1,6 +1,6 @@
 import { getNavbarLayout } from '@/components'
 import { NextPageWithLayout } from '@/utils'
-import HomeComponent from '@/view/home/login'
+import HomeComponent from '@/view/home'
 
 const HomePage: NextPageWithLayout = () => {
     return (

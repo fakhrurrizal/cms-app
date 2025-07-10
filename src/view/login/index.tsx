@@ -1,19 +1,23 @@
+'use client'
+
 import { CustomTextField } from '@/components'
 import { LoginForm, loginSchema, useLoginMutation } from '@/modules/auth/login'
 import { useAuth } from '@/services'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Icon } from '@iconify/react'
 import { Box, Button, Card, CardContent, Container, Fade, Grid, Slide, Typography } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 
-
 const LoginComponent: React.FC = () => {
     const router = useRouter()
-    const [isVisible, setIsVisible] = useState(false)
+    const theme = useTheme()
+    const isDark = theme.palette.mode === 'dark'
 
+    const [isVisible, setIsVisible] = useState(false)
     const { mutateAsync: login, isPending: isLoadingLogin } = useLoginMutation()
     const setAuth = useAuth(state => state.setAuth)
 
@@ -27,9 +31,10 @@ const LoginComponent: React.FC = () => {
             username: '',
             password: '',
             fullname: "Admin KLIK",
-            session: '',
         },
     })
+
+    console.log(errors)
 
     useEffect(() => {
         setIsVisible(true)
@@ -60,83 +65,42 @@ const LoginComponent: React.FC = () => {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
+                backgroundColor: isDark ? '#0f172a' : undefined, // slate-900 untuk dark
             }}
         >
             <Box
                 sx={{
                     position: 'absolute',
                     inset: 0,
-                    background: 'linear-gradient(135deg, #f8fafc 0%, #e1f5fe 25%, #f0f9ff 50%, #fafbff 75%, #ffffff 100%)',
+                    background: isDark
+                        ? 'linear-gradient(135deg, #0f172a, #1e293b)'
+                        : 'linear-gradient(135deg, #f8fafc 0%, #e1f5fe 25%, #f0f9ff 50%, #fafbff 75%, #ffffff 100%)',
                     '&::before': {
                         content: '""',
                         position: 'absolute',
                         inset: 0,
-                        background: `
-                            radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.03) 0%, transparent 50%),
-                            radial-gradient(circle at 80% 80%, rgba(147, 197, 253, 0.03) 0%, transparent 50%),
-                            radial-gradient(circle at 40% 70%, rgba(96, 165, 250, 0.02) 0%, transparent 50%)
-                        `,
+                        background: isDark
+                            ? 'radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.03) 0%, transparent 50%)'
+                            : `
+                                radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.03) 0%, transparent 50%),
+                                radial-gradient(circle at 80% 80%, rgba(147, 197, 253, 0.03) 0%, transparent 50%),
+                                radial-gradient(circle at 40% 70%, rgba(96, 165, 250, 0.02) 0%, transparent 50%)
+                            `,
                     },
                 }}
             />
-
-            <Box
-                sx={{
-                    position: 'absolute',
-                    inset: 0,
-                    '& .floating-shape': {
-                        position: 'absolute',
-                        borderRadius: '50%',
-                        opacity: 0.05,
-                        animation: 'gentleFloat 20s ease-in-out infinite',
-                    },
-                }}
-            >
-                <Box
-                    className="floating-shape"
-                    sx={{
-                        width: '400px',
-                        height: '400px',
-                        background: 'linear-gradient(45deg, #3b82f6, #1e40af)',
-                        top: '-200px',
-                        left: '-200px',
-                        animationDelay: '0s',
-                    }}
-                />
-                <Box
-                    className="floating-shape"
-                    sx={{
-                        width: '300px',
-                        height: '300px',
-                        background: 'linear-gradient(45deg, #60a5fa, #3b82f6)',
-                        top: '10%',
-                        right: '-150px',
-                        animationDelay: '5s',
-                        animationDirection: 'reverse',
-                    }}
-                />
-                <Box
-                    className="floating-shape"
-                    sx={{
-                        width: '200px',
-                        height: '200px',
-                        background: 'linear-gradient(45deg, #93c5fd, #60a5fa)',
-                        bottom: '20%',
-                        left: '10%',
-                        animationDelay: '10s',
-                    }}
-                />
-            </Box>
 
             <Container maxWidth='sm' sx={{ position: 'relative', zIndex: 10 }}>
                 <Fade in={isVisible} timeout={1000}>
                     <Card
                         sx={{
-                            background: 'rgba(255, 255, 255, 0.9)',
+                            background: isDark ? 'rgba(15, 23, 42, 0.9)' : 'rgba(255, 255, 255, 0.9)',
                             backdropFilter: 'blur(20px)',
                             borderRadius: '24px',
-                            boxShadow: '0 25px 50px rgba(59, 130, 246, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.6)',
-                            border: '1px solid rgba(255, 255, 255, 0.2)',
+                            boxShadow: isDark
+                                ? '0 25px 50px rgba(30, 58, 138, 0.15)'
+                                : '0 25px 50px rgba(59, 130, 246, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.6)',
+                            border: isDark ? '1px solid rgba(255, 255, 255, 0.05)' : '1px solid rgba(255, 255, 255, 0.2)',
                             width: '100%',
                             maxWidth: '450px',
                             mx: 'auto',
@@ -148,7 +112,9 @@ const LoginComponent: React.FC = () => {
                                 left: 0,
                                 right: 0,
                                 height: '1px',
-                                background: 'linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.3), transparent)',
+                                background: isDark
+                                    ? 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent)'
+                                    : 'linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.3), transparent)',
                             },
                         }}
                     >
@@ -161,7 +127,7 @@ const LoginComponent: React.FC = () => {
                                             height: 80,
                                             mx: 'auto',
                                             mb: 3,
-                                            background: 'linear-gradient(135deg, #3b82f6 0%, #1e40af 100%)',
+                                            background: 'linear-gradient(45deg, #3b82f6, #1e40af)',
                                             borderRadius: '20px',
                                             display: 'flex',
                                             alignItems: 'center',
@@ -169,13 +135,7 @@ const LoginComponent: React.FC = () => {
                                             boxShadow: '0 8px 25px rgba(59, 130, 246, 0.3)',
                                         }}
                                     >
-                                        <Icon
-                                            icon="mdi:account-circle"
-                                            style={{
-                                                fontSize: '48px',
-                                                color: 'white'
-                                            }}
-                                        />
+                                        <Icon icon="mdi:account-circle" style={{ fontSize: '48px', color: 'white' }} />
                                     </Box>
 
                                     <Typography
@@ -197,7 +157,7 @@ const LoginComponent: React.FC = () => {
                                     <Typography
                                         variant='body1'
                                         sx={{
-                                            color: '#64748b',
+                                            color: isDark ? '#cbd5e1' : '#64748b',
                                             fontSize: '1rem',
                                             fontWeight: 400,
                                             letterSpacing: '0.025em',
@@ -222,7 +182,6 @@ const LoginComponent: React.FC = () => {
                                                 fullWidth
                                             />
                                         </Grid>
-
                                         <Grid item xs={12}>
                                             <CustomTextField
                                                 control={control}
@@ -237,7 +196,7 @@ const LoginComponent: React.FC = () => {
                                         </Grid>
                                     </Grid>
 
-                                    <Box sx={{ pt: 4 }}>
+                                    <Box sx={{ pt: 4, mb: 4 }}>
                                         <Button
                                             type='submit'
                                             fullWidth
@@ -255,7 +214,8 @@ const LoginComponent: React.FC = () => {
                                                 transition: 'all 0.3s ease',
                                                 '&:hover': {
                                                     transform: 'translateY(-2px)',
-                                                    boxShadow: '0 15px 35px rgba(59, 130, 246, 0.4), 0 5px 15px rgba(59, 130, 246, 0.3)',
+                                                    boxShadow:
+                                                        '0 15px 35px rgba(59, 130, 246, 0.4), 0 5px 15px rgba(59, 130, 246, 0.3)',
                                                     background: 'linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%)',
                                                 },
                                                 '&:active': {
@@ -283,10 +243,6 @@ const LoginComponent: React.FC = () => {
                                     </Box>
                                 </Box>
                             </Slide>
-
-                            <Box sx={{ textAlign: 'center', mt: 6 }}>
-
-                            </Box>
                         </CardContent>
                     </Card>
                 </Fade>
@@ -307,11 +263,9 @@ const LoginComponent: React.FC = () => {
                         opacity: 0.03;
                     }
                 }
-
                 .animate-spin {
                     animation: spin 1s linear infinite;
                 }
-
                 @keyframes spin {
                     from {
                         transform: rotate(0deg);

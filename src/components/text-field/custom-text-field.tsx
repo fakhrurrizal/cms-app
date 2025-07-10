@@ -5,6 +5,7 @@ import { useState, useMemo } from 'react'
 import { Control, Controller, FieldValues, Path } from 'react-hook-form'
 import { MUITextField } from '../mui'
 import { Icon } from '@iconify/react'
+import { useIsDarkMode } from '@/services'
 
 export type TextFieldProps<T extends FieldValues = Record<string, any>> = Omit<MuiTextFieldProps, 'name'> & {
     inputFormat?: 'NORMAL' | 'PASSWORD' | 'PHONE'
@@ -16,7 +17,6 @@ export type TextFieldProps<T extends FieldValues = Record<string, any>> = Omit<M
     placeholder?: string
     textUppercase?: boolean
     textLowercase?: boolean
-    textSlug?: boolean
     maxLength?: number
 }
 
@@ -30,7 +30,6 @@ export function CustomTextField<T extends FieldValues = Record<string, any>>(pro
         placeholder = '',
         textUppercase = false,
         textLowercase = false,
-        textSlug = false,
         maxLength,
         ...moreProps
     } = props
@@ -38,6 +37,8 @@ export function CustomTextField<T extends FieldValues = Record<string, any>>(pro
     const [showPassword, setShowPassword] = useState<boolean>(false)
 
     const isPasswordType = inputFormat === 'PASSWORD'
+
+    const isDarkMode = useIsDarkMode()
 
     const endAdornment = useMemo(() => {
         switch (inputFormat) {
@@ -87,12 +88,6 @@ export function CustomTextField<T extends FieldValues = Record<string, any>>(pro
                                     onValueChange(modifiedValue)
                                 }
                                 onChange(modifiedValue)
-                            } else if (textSlug) {
-                                const modifiedValue = e.target.value.toLowerCase().replace(/\s+/g, '-')
-                                if (onValueChange) {
-                                    onValueChange(modifiedValue)
-                                }
-                                onChange(modifiedValue)
                             } else {
                                 if (onValueChange) {
                                     onValueChange(e.target.value)
@@ -100,18 +95,7 @@ export function CustomTextField<T extends FieldValues = Record<string, any>>(pro
                                 onChange(e.target.value)
                             }
                         }}
-                        onKeyDown={e => {
-                            if (inputFormat === 'PHONE') {
-                                if (
-                                    !/[0-9]/.test(e.key) &&
-                                    !['Backspace', 'Tab', 'Delete', 'ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(
-                                        e.key
-                                    )
-                                ) {
-                                    e.preventDefault()
-                                }
-                            }
-                        }}
+
                         helperText={helperText}
                         type={!isPasswordType ? moreProps.type : showPassword ? 'text' : 'password'}
                         placeholder={isReadOnly ? undefined : placeholder ? placeholder : `${props?.label || ''}...`}
@@ -120,7 +104,6 @@ export function CustomTextField<T extends FieldValues = Record<string, any>>(pro
                             endAdornment,
                             autoComplete: 'off',
                             readOnly: isReadOnly,
-                            sx: { backgroundColor: '#ffffff' }
                         }}
                         inputProps={{
                             inputMode: inputFormat === 'PHONE' ? 'numeric' : 'text',
@@ -129,12 +112,12 @@ export function CustomTextField<T extends FieldValues = Record<string, any>>(pro
                         variant={variant}
                         sx={{
                             '& .MuiOutlinedInput-root': {
-                                backgroundColor: '#ffffff',
                                 cursor: isReadOnly ? 'default' : '',
+                                backgroundColor: isDarkMode ? '#2F3241' : '#ffffff',
                             },
                             '& .MuiOutlinedInput-input:hover': {
                                 cursor: isReadOnly ? 'default' : '',
-                            },
+                              },
                         }}
 
                     />

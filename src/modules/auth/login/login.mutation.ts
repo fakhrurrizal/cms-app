@@ -11,7 +11,7 @@ export interface SessionData {
 export const useLoginMutation = () =>
     useMutation<SessionData, Error, LoginForm>({
         mutationFn: async data => {
-            await new Promise(resolve => setTimeout(resolve, 1000))
+            await new Promise(resolve => setTimeout(resolve, 2000))
 
             const sessionData = {
                 ...data,

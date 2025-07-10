@@ -1,15 +1,17 @@
 import { useApplicationSettings } from '@/services'
 import { Box } from '@mui/material'
 import { ReactNode, useMemo } from 'react'
-import Navbar from './navbar-default-layout'
+import dynamic from 'next/dynamic'
 
+const Navbar = dynamic(() => import('./navbar-default-layout'), { ssr: false })
 
 export const appBarHeight = 100
 const normalSideBarWidth = 250
 const miniSideBarWidth = 60
 
+
 export const DefaultLayout = ({ children }: { children: ReactNode }) => {
-   
+
     const isExpandDrawer = useApplicationSettings(state => state.value.expandSidebar)
 
     const drawerWidth = useMemo(() => {
@@ -20,37 +22,39 @@ export const DefaultLayout = ({ children }: { children: ReactNode }) => {
         }
     }, [isExpandDrawer])
 
-  
+
     return (
         <>
             <Navbar drawerWidth={drawerWidth} />
 
             <Box
-                component='main'
-                sx={({ breakpoints }) => ({
+                component="main"
+                sx={({ breakpoints, palette, shape }) => ({
                     flexGrow: 1,
                     padding: 2,
-                    // backgroundColor: theme => theme.palette.mainColor,
+                    backgroundColor: palette.background.default,
+                    minHeight: `calc(100vh - ${appBarHeight}px)`,
+                    maxHeight: `calc(100vh - ${appBarHeight}px)`,
+                    overflowY: 'auto',
+                    marginTop: `calc(${appBarHeight}px)`,
+                    borderTopLeftRadius: shape.borderRadius,
+                    borderTopRightRadius: shape.borderRadius,
+                    marginRight: '0px',
+                    transition: 'background-color 0.3s ease',
                     [breakpoints.up('md')]: {
                         paddingLeft: `calc(${drawerWidth}px + 15px)`,
                     },
-                    minHeight: `calc(100vh - ${appBarHeight}px)`,
-                    // position: 'relative',
-                    // overflowY: 'auto',
-                    marginTop: `calc(${appBarHeight}px)`,
-                    borderTopLeftRadius: theme => theme.shape.borderRadius + 'px',
-                    borderTopRightRadius: theme => theme.shape.borderRadius + 'px',
-                    marginRight: '0px',
                     [breakpoints.down('md')]: {
-                        marginX: '8px',
+                        marginInline: '8px',
                         paddingRight: 2,
                         paddingY: 1,
                     },
                 })}
-                className='bg-[#f8f7fa] !rounded-md'
+                className="transition-colors duration-300 bg-white dark:bg-gray-900 rounded-md"
             >
                 {children}
             </Box>
+
         </>
     )
 }

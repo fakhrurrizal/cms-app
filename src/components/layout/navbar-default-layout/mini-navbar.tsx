@@ -1,6 +1,6 @@
 import Icon from '@/components/icon'
 import { SzhsinMenu } from '@/components/szhsin'
-import { NavbarItem } from '@/interfaces'
+import { MenuItem } from '@/utils'
 import {
     List,
     ListItem,
@@ -17,7 +17,7 @@ import { useRouter } from 'next/router'
 import { FunctionComponent, useRef, useState } from 'react'
 
 interface GenerateListItemProps {
-    items: NavbarItem[]
+    items: MenuItem[]
 }
 
 const listIconButtonStyle: SxProps<Theme> = ({ palette }) => ({
@@ -44,7 +44,7 @@ export const GenerateMiniListItem: FunctionComponent<GenerateListItemProps> = ({
             disablePadding
             component='div'
             sx={() => ({
-                paddingTop: '4.75rem',
+                paddingTop: '6rem',
                 transition: 'transform 0.3s ease-in-out',
                 '&:enter': {
                     transform: 'translateX(-100%)',
@@ -61,7 +61,7 @@ export const GenerateMiniListItem: FunctionComponent<GenerateListItemProps> = ({
     )
 }
 
-const NavbarButton = ({ path, children = [], icon, name }: NavbarItem) => {
+const NavbarButton = ({ path, children = [], icon, name }: MenuItem) => {
     const { push, path: currentPathname }: any = useRouter()
 
     const [open, setOpen] = useState<boolean>(false)
@@ -83,7 +83,7 @@ const NavbarButton = ({ path, children = [], icon, name }: NavbarItem) => {
 
     const getIsSelected = (path: string) => currentPathname === path
 
-    const someChildrenSelected = (children: NavbarItem[]) => children.some(data => data.path === currentPathname)
+    const someChildrenSelected = (children: MenuItem[]) => children.some(data => data.path === currentPathname)
 
     return (
         <>

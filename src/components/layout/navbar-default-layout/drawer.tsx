@@ -1,6 +1,6 @@
 import Icon from '@/components/icon'
-import { NavbarItem } from '@/interfaces'
 import { useApplicationSettings } from '@/services'
+import { MenuItem } from '@/utils'
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined'
 import { Box, List, SxProps, Theme, Tooltip, Typography, useTheme } from '@mui/material'
@@ -14,7 +14,7 @@ import { useRouter } from 'next/router'
 import { Fragment, useState } from 'react'
 
 interface Props {
-    items: NavbarItem[]
+    items: MenuItem[]
     appBarHeight: number
     handleLogout: () => void
 }
@@ -22,7 +22,7 @@ interface Props {
 const ExpandedDrawer = (props: Props) => {
     const {
         items = [],
-        appBarHeight = 65,
+        appBarHeight = 55,
         handleLogout = () => {
             return
         },

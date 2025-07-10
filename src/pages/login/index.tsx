@@ -1,7 +1,6 @@
-import { NextPageWithLayout } from '@/utils'
-import LoginComponent from '@/view/login'
+import LoginComponent from '@/view/login/login'
 
-const LoginPage: NextPageWithLayout = () => {
+const LoginPage = () => {
     return (
         <>
             <LoginComponent />

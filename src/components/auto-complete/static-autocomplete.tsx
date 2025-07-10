@@ -1,4 +1,3 @@
-import { GeneralOption } from '@/interfaces'
 import MuiAutocomplete, { AutocompleteProps as MuiAutocompleteProps } from '@mui/material/Autocomplete'
 import MuiTextField from '@mui/material/TextField'
 import { Control, Controller, FieldValues, Path, PathValue } from 'react-hook-form'
@@ -10,6 +9,11 @@ interface StaticAutoCompleteProps<Form extends FieldValues, Option>
     label: string
     onValueChange?: MuiAutocompleteProps<Option, boolean, boolean, boolean>['onChange']
     variant?: 'outlined' | 'filled' | 'standard'
+}
+
+interface GeneralOption {
+    label: string
+    id: string | number
 }
 
 export function StaticAutoComplete<Form extends FieldValues, Option = GeneralOption>(

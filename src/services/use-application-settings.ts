@@ -11,11 +11,15 @@ export interface ApplicationSettings {
 export interface ApplicationSettingsState {
     value: ApplicationSettings
 
+    isHydrated: boolean
+
     changeScreenMode: (screenMode: ScreenMode) => void
 
     toggleExpandSidebar: () => void
 
     setExpandSidebar: (expandSidebar: boolean) => void
+
+    hydrate: () => void
 }
 
 const defaultValue: ApplicationSettings = {
@@ -39,6 +43,16 @@ const initialState: ApplicationSettings = getInitialState()
 
 export const useApplicationSettings = create<ApplicationSettingsState>()(set => ({
     value: initialState,
+
+    isHydrated: false,
+
+    hydrate: () => {
+        const stored = getInitialState()
+        set({
+            value: stored,
+            isHydrated: true,
+        })
+    },
 
     changeScreenMode: screenMode =>
         set(state => {

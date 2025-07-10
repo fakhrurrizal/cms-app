@@ -1,89 +1,86 @@
-// ** React Import
 import { forwardRef } from 'react'
 
-// ** MUI Imports
 import { styled } from '@mui/material/styles'
 import TextField, { TextFieldProps } from '@mui/material/TextField'
 
 const TextFieldStyled = styled(TextField)<TextFieldProps>(({ theme }) => {
+    const isDarkMode = theme.palette.mode === 'dark'
+
     return {
         alignItems: 'flex-start',
+
         '& .MuiInputLabel-root': {
             transform: 'none',
             lineHeight: 1.154,
             position: 'relative',
             marginBottom: '3px',
             fontSize: theme.typography.body2.fontSize,
+            color: theme.palette.text.primary,
         },
+
         '& .MuiInputBase-root': {
             borderRadius: 8,
-            backgroundColor: '#fff !important',
-            border: `1px solid rgba(47,43,61, 0.2)`,
+            backgroundColor: theme.palette.background.paper,
+            border: `1px solid ${isDarkMode ? '#5A5F73' : 'rgba(47,43,61, 0.2)'}`,
             fontSize: theme.typography.body2.fontSize,
             transition: theme.transitions.create(['border-color', 'box-shadow'], {
                 duration: theme.transitions.duration.shorter,
             }),
+
             '&:not(.Mui-focused):not(.Mui-disabled):not(.Mui-error):hover': {
-                borderColor: `rgba(47,43,61, 0.28)`,
+                borderColor: isDarkMode ? '#8F90A6' : 'rgba(47,43,61, 0.28)',
             },
+
             '&:before, &:after': {
                 display: 'none',
             },
+
             '&.MuiInputBase-sizeSmall': {
                 borderRadius: 6,
             },
+
             '&.Mui-error': {
                 borderColor: theme.palette.error.main,
             },
+
             '&.Mui-focused': {
                 boxShadow: theme.shadows[2],
+
                 '& .MuiInputBase-input:not(.MuiInputBase-readOnly):not([readonly])::placeholder': {
                     transform: 'translateX(4px)',
                 },
-                '&.MuiInputBase-colorPrimary': {
-                    borderColor: theme.palette.primary.main,
-                },
-                '&.MuiInputBase-colorSecondary': {
-                    borderColor: theme.palette.secondary.main,
-                },
-                '&.MuiInputBase-colorInfo': {
-                    borderColor: theme.palette.info.main,
-                },
-                '&.MuiInputBase-colorSuccess': {
-                    borderColor: theme.palette.success.main,
-                },
-                '&.MuiInputBase-colorWarning': {
-                    borderColor: theme.palette.warning.main,
-                },
-                '&.MuiInputBase-colorError': {
-                    borderColor: theme.palette.error.main,
-                },
-                '&.Mui-error': {
-                    borderColor: theme.palette.error.main,
-                },
+
+                borderColor: theme.palette.primary.main,
             },
+
             '&.Mui-disabled': {
-                backgroundColor: `${theme.palette.action.selected} !important`,
+                backgroundColor: theme.palette.action.selected,
             },
+
             '& .MuiInputAdornment-root': {
                 marginTop: '0 !important',
             },
         },
+
         '& .MuiInputBase-input': {
-            color: theme.palette.text.secondary,
+            color: theme.palette.text.primary,
+
             '&:not(textarea)': {
                 padding: '15.5px 13px',
             },
+
             '&:not(textarea).MuiInputBase-inputSizeSmall': {
                 padding: '5.5px 13px',
             },
+
             '&:not(.MuiInputBase-readOnly):not([readonly])::placeholder': {
+                opacity: 0.6,
                 transition: theme.transitions.create(['opacity', 'transform'], {
                     duration: theme.transitions.duration.shorter,
                 }),
+                color: theme.palette.text.primary,
             },
 
-            // ** For Autocomplete
             '&.MuiInputBase-inputAdornedStart:not(.MuiAutocomplete-input)': {
                 paddingLeft: 0,
             },
@@ -91,6 +88,7 @@ const TextFieldStyled = styled(TextField)<TextFieldProps>(({ theme }) => {
                 paddingRight: 0,
             },
         },
+
         '& .MuiFormHelperText-root': {
             lineHeight: 1,
             margin: theme.spacing(0.8, 0, 0),
@@ -101,15 +99,14 @@ const TextFieldStyled = styled(TextField)<TextFieldProps>(({ theme }) => {
             },
         },
 
-        // ** For Select
         '& .MuiSelect-select:focus, & .MuiNativeSelect-select:focus': {
             backgroundColor: 'transparent',
         },
+
         '& .MuiSelect-filled .MuiChip-root': {
             height: 22,
         },
 
-        // ** For Autocomplete
         '& .MuiAutocomplete-input': {
             paddingLeft: '6px !important',
             paddingTop: '7.5px !important',
@@ -120,6 +117,7 @@ const TextFieldStyled = styled(TextField)<TextFieldProps>(({ theme }) => {
                 paddingBottom: '1.5px !important',
             },
         },
+
         '& .MuiAutocomplete-inputRoot': {
             paddingTop: '8px !important',
             paddingLeft: '8px !important',
@@ -138,7 +136,6 @@ const TextFieldStyled = styled(TextField)<TextFieldProps>(({ theme }) => {
             },
         },
 
-        // ** For Textarea
         '& .MuiInputBase-multiline': {
             padding: '15.25px 13px',
             '&.MuiInputBase-sizeSmall': {
@@ -149,7 +146,6 @@ const TextFieldStyled = styled(TextField)<TextFieldProps>(({ theme }) => {
             },
         },
 
-        // ** For Date Picker
         '& + .react-datepicker__close-icon': {
             top: 11,
             '&:after': {
@@ -160,7 +156,6 @@ const TextFieldStyled = styled(TextField)<TextFieldProps>(({ theme }) => {
 })
 
 export const MUITextField = forwardRef((props: TextFieldProps, ref) => {
-    // ** Props
     const { size = 'small', InputLabelProps, ...rest } = props
 
     return (

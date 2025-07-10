@@ -1,16 +1,46 @@
 import { alpha, createTheme } from '@mui/material/styles'
 import { useMemo } from 'react'
+import { useApplicationSettings } from './use-application-settings'
+
+export const useIsDarkMode = () => {
+    const screenMode = useApplicationSettings(state => state.value.screenMode)
+
+    return screenMode === 'DARK'
+}
 
 export const useGetTheme = () => {
-    const primary = '#3FA9E6'
+    const isDarkMode = useIsDarkMode()
 
+    const primary = '#1e40af '
     const error = '#ff3a6e'
+    const success = '#6fd943'
+    const warning = '#facc15'
+    const info = '#93c5fd'
+    const secondary = '#808080'
 
     const borderRadius = 4
 
-    const fontColor = '#474955'
+    const fontColor = isDarkMode ? '#F4F5FA' : '#474955'
+    const fontDark = isDarkMode ? '#474955' : primary
+    const mainColor = '#f1f5f9'
 
-    const fontDark = '#474955'
+    const colors = {
+        background: {
+            default: isDarkMode ? '#252836' : '#FFFFFF',
+            paper: isDarkMode ? '#2F3241' : '#FFFFFF',
+            surface: isDarkMode ? '#3B3F52' : mainColor,
+        },
+
+        border: isDarkMode ? '#5A5F73' : '#E0E0E0',
+        divider: isDarkMode ? '#4C5165' : '#E0E0E0',
+
+        hover: isDarkMode ? alpha('#FFFFFF', 0.04) : alpha('#000000', 0.04),
+        selected: alpha(primary, 0.15),
+
+        fontColor: fontColor,
+        fontSecondary: fontDark,
+        shadow: 'rgba(47, 43, 61, 0.1)',
+    }
 
     const useTheme = useMemo(
         () =>
@@ -20,6 +50,8 @@ export const useGetTheme = () => {
                 },
 
                 palette: {
+                    mode: isDarkMode ? 'dark' : 'light',
+
                     primary: {
                         main: primary,
                     },
@@ -29,29 +61,35 @@ export const useGetTheme = () => {
                     },
 
                     success: {
-                        main: '#6fd943',
+                        main: success,
                     },
 
                     secondary: {
-                        main: '#808080',
+                        main: secondary,
                     },
 
                     warning: {
-                        main: '#facc15',
+                        main: warning,
                     },
 
                     info: {
-                        main: '#93c5fd',
+                        main: info,
                     },
 
-                    mainColor: '#f1f5f9',
-
-                    fontColor,
+                    background: {
+                        default: colors.background.default,
+                        paper: colors.background.paper,
+                    },
 
                     text: {
                         primary: fontColor,
-                        secondary: fontDark,
+                        secondary: fontColor,
                     },
+
+                    divider: colors.divider,
+
+                    mainColor: mainColor,
+                    fontColor: fontColor,
                 },
 
                 typography: {
@@ -147,10 +185,45 @@ export const useGetTheme = () => {
                 ],
 
                 components: {
+                    MuiCssBaseline: {
+                        styleOverrides: {
+                            body: {
+                                backgroundColor: colors.background.default,
+                                color: colors.fontColor,
+                                '*::-webkit-scrollbar': {
+                                    width: '8px',
+                                    height: '8px',
+                                },
+                                '*::-webkit-scrollbar-thumb': {
+                                    backgroundColor: isDarkMode ? '#4B5563' : '#CBD5E1',
+                                    borderRadius: '4px',
+                                },
+                                '*::-webkit-scrollbar-track': {
+                                    backgroundColor: isDarkMode ? '#1F2937' : '#F1F5F9',
+                                },
+                            },
+                        },
+                    },
+
                     MuiTextField: {
                         styleOverrides: {
                             root: {
-                                fontWeight: 500,
+                                '& .MuiOutlinedInput-root': {
+                                    backgroundColor: `${colors.background.paper} !important`,
+                                    '& fieldset': {
+                                        borderColor: colors.border,
+                                    },
+                                    '&:hover fieldset': {
+                                        borderColor: alpha(primary, 0.7),
+                                    },
+                                    '&.Mui-focused fieldset': {
+                                        borderColor: primary,
+                                    },
+                                    '& input::placeholder': {
+                                        color: colors.fontColor,
+                                        opacity: 0.6,
+                                    },
+                                },
                             },
                         },
                         defaultProps: {
@@ -162,19 +235,94 @@ export const useGetTheme = () => {
                         styleOverrides: {
                             root: {
                                 '& .MuiTypography-root': {
-                                    color: alpha('#000000', 0.87),
+                                    color: colors.fontSecondary,
                                 },
                             },
                         },
                     },
-
-                    MuiSelect: {
-                        defaultProps: {
-                            fullWidth: true,
-                            size: 'small',
+                    MuiOutlinedInput: {
+                        styleOverrides: {
+                            root: {
+                                backgroundColor: colors.background.paper,
+                                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                    borderColor: primary,
+                                },
+                                '&:hover .MuiOutlinedInput-notchedOutline': {
+                                    borderColor: alpha(primary, 0.7),
+                                },
+                                '& .MuiOutlinedInput-notchedOutline': {
+                                    borderColor: colors.border,
+                                },
+                            },
+                            input: {
+                                color: colors.fontColor,
+                                '&::placeholder': {
+                                    color: colors.fontColor,
+                                    opacity: 0.6,
+                                },
+                            },
+                        },
+                    },
+                    MuiDialog: {
+                        styleOverrides: {
+                            paper: {
+                                backgroundColor: colors.background.paper,
+                                color: colors.fontColor,
+                                borderRadius: borderRadius,
+                                border: `1px solid ${colors.border}`,
+                                boxShadow: `0px 10px 30px ${colors.shadow}`,
+                            },
                         },
                     },
 
+                    MuiDialogTitle: {
+                        styleOverrides: {
+                            root: {
+                                color: colors.fontColor,
+                                fontWeight: 600,
+                                fontSize: '1.125rem',
+                            },
+                        },
+                    },
+
+                    MuiDialogContent: {
+                        styleOverrides: {
+                            root: {
+                                color: colors.fontColor,
+                                backgroundColor: colors.background.paper,
+                            },
+                        },
+                    },
+
+                    MuiDialogActions: {
+                        styleOverrides: {
+                            root: {
+                                padding: '12px 24px',
+                            },
+                        },
+                    },
+
+                    MuiBackdrop: {
+                        styleOverrides: {
+                            root: {
+                                backgroundColor: isDarkMode ? 'rgba(15, 23, 42, 0.7)' : 'rgba(0, 0, 0, 0.5)',
+                            },
+                        },
+                    },
+
+                    MuiInputLabel: {
+                        styleOverrides: {
+                            root: {
+                                color: colors.fontColor,
+                                '&.Mui-focused': {
+                                    color: primary,
+                                },
+                                '&.Mui-error': {
+                                    color: error,
+                                },
+                            },
+                        },
+                    },
                     MuiButton: {
                         styleOverrides: {
                             root: {
@@ -184,6 +332,26 @@ export const useGetTheme = () => {
                                     boxShadow: 'none',
                                 },
                             },
+                            contained: {
+                                color: '#ffffff',
+                                '&:hover': {
+                                    backgroundColor: alpha(primary, 0.8),
+                                },
+                            },
+                            outlined: {
+                                borderColor: colors.border,
+                                color: colors.fontColor,
+                                '&:hover': {
+                                    borderColor: primary,
+                                    backgroundColor: alpha(primary, 0.04),
+                                },
+                            },
+                            text: {
+                                color: colors.fontColor,
+                                '&:hover': {
+                                    backgroundColor: colors.hover,
+                                },
+                            },
                         },
                     },
 
@@ -191,7 +359,7 @@ export const useGetTheme = () => {
                         styleOverrides: {
                             root: {
                                 minWidth: '38px',
-                                color: primary,
+                                color: colors.fontSecondary,
                             },
                         },
                     },
@@ -200,6 +368,7 @@ export const useGetTheme = () => {
                         styleOverrides: {
                             root: {
                                 borderRadius: borderRadius + 'px',
+                                color: colors.fontColor,
                             },
                         },
                     },
@@ -208,13 +377,15 @@ export const useGetTheme = () => {
                         styleOverrides: {
                             root: {
                                 borderRadius: borderRadius + 'px',
+                                color: colors.fontColor,
 
                                 ':hover': {
                                     boxShadow: 'none',
+                                    backgroundColor: colors.hover,
                                 },
 
                                 '&.Mui-selected': {
-                                    backgroundColor: alpha(primary, 0.2),
+                                    backgroundColor: colors.selected,
 
                                     '& .MuiButtonBase-root': {
                                         color: primary,
@@ -227,6 +398,14 @@ export const useGetTheme = () => {
 
                                     '& .MuiSvgIcon-root': {
                                         color: primary,
+                                    },
+
+                                    '& .MuiListItemIcon-root': {
+                                        color: primary,
+                                    },
+
+                                    '&:hover': {
+                                        backgroundColor: alpha(primary, isDarkMode ? 0.2 : 0.16),
                                     },
                                 },
                             },
@@ -243,6 +422,7 @@ export const useGetTheme = () => {
                             },
                             label: {
                                 fontSize: '0.85rem',
+                                color: colors.fontColor,
                             },
                         },
                     },
@@ -252,24 +432,36 @@ export const useGetTheme = () => {
                             root: {
                                 boxShadow: 'none',
                                 backgroundImage: 'none',
+                                backgroundColor: colors.background.paper,
+                                border: `1px solid ${colors.border}`,
                             },
                         },
                     },
 
                     MuiTableCell: {
                         styleOverrides: {
+                            root: {
+                                borderBottom: `1px solid ${colors.border}`,
+                                color: colors.fontColor,
+                            },
                             head: {
                                 fontWeight: 600,
+                                backgroundColor: colors.background.surface,
+                                color: colors.fontColor,
                             },
                         },
                     },
 
                     MuiTooltip: {
-                        defaultProps: {
-                            placement: 'bottom',
-                            sx: {
+                        styleOverrides: {
+                            tooltip: {
+                                backgroundColor: isDarkMode ? '#374151' : '#1F2937',
+                                color: isDarkMode ? '#E5E7EB' : '#FFFFFF',
                                 fontSize: '13px',
                             },
+                        },
+                        defaultProps: {
+                            placement: 'bottom',
                         },
                     },
 
@@ -293,17 +485,86 @@ export const useGetTheme = () => {
 
                     MuiAutocomplete: {
                         styleOverrides: {
+                            root: {
+                                '& .MuiOutlinedInput-root': {
+                                    backgroundColor: colors.background.paper,
+                                },
+                            },
                             tag: ({ ownerState }) => ({
+                                backgroundColor: colors.background.surface,
+                                color: colors.fontColor,
+                                border: `1px solid ${colors.border}`,
                                 ...(ownerState.size === 'small' && {
                                     height: '22px',
                                 }),
                             }),
+                            paper: {
+                                backgroundColor: colors.background.paper,
+                                border: `1px solid ${colors.border}`,
+                            },
+                            option: {
+                                color: colors.fontColor,
+                                '&:hover': {
+                                    backgroundColor: colors.hover,
+                                },
+                                '&.Mui-selected': {
+                                    backgroundColor: colors.selected,
+                                },
+                            },
+                        },
+                    },
+
+                    MuiDivider: {
+                        styleOverrides: {
+                            root: {
+                                borderColor: colors.divider,
+                            },
+                        },
+                    },
+
+                    MuiPaper: {
+                        styleOverrides: {
+                            root: {
+                                backgroundColor: colors.background.paper,
+                                color: colors.fontColor,
+                            },
+                        },
+                    },
+
+                    MuiAppBar: {
+                        styleOverrides: {
+                            root: {
+                                backgroundColor: colors.background.paper,
+                                color: colors.fontColor,
+                                borderBottom: `1px solid ${colors.border}`,
+                            },
+                        },
+                    },
+
+                    MuiDrawer: {
+                        styleOverrides: {
+                            paper: {
+                                backgroundColor: colors.background.paper,
+                                borderRight: `1px solid ${colors.border}`,
+                            },
                         },
                     },
                 },
             }),
 
-        [fontColor, fontDark, primary]
+        [
+            isDarkMode,
+            colors.fontColor,
+            colors.fontSecondary,
+            colors.background,
+            colors.border,
+            colors.hover,
+            colors.selected,
+            colors.divider,
+            fontColor,
+            primary,
+            colors.shadow,
+        ]
     )
 
     return useTheme

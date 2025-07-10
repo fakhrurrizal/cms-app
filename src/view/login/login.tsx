@@ -1,5 +1,5 @@
 import { CustomTextField } from '@/components'
-import { useLoginMutation } from '@/modules/auth/login'
+import { LoginForm, loginSchema, useLoginMutation } from '@/modules/auth/login'
 import { useAuth } from '@/services'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Icon } from '@iconify/react'
@@ -8,17 +8,7 @@ import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
-import { z } from 'zod'
 
-// Schema Zod untuk validasi Login
-const loginSchema = z.object({
-    username: z.string().min(3, 'Username wajib diisi'),
-    password: z.string().min(1, 'Password wajib diisi'),
-    fullname: z.string().optional(),
-    session: z.string().optional(),
-})
-
-type LoginFormData = z.infer<typeof loginSchema>
 
 const LoginComponent: React.FC = () => {
     const router = useRouter()
@@ -31,7 +21,7 @@ const LoginComponent: React.FC = () => {
         control,
         handleSubmit,
         formState: { errors },
-    } = useForm<LoginFormData>({
+    } = useForm<LoginForm>({
         resolver: zodResolver(loginSchema),
         defaultValues: {
             username: '',
@@ -218,7 +208,6 @@ const LoginComponent: React.FC = () => {
                                 </Box>
                             </Slide>
 
-                            {/* Form Section */}
                             <Slide direction='up' in={isVisible} timeout={1400}>
                                 <Box component="form" onSubmit={handleSubmit(onSubmit)}>
                                     <Grid container spacing={3}>
@@ -231,18 +220,6 @@ const LoginComponent: React.FC = () => {
                                                 label='Username'
                                                 placeholder='masukan "admin"'
                                                 fullWidth
-                                                sx={{
-                                                    '& .MuiOutlinedInput-root': {
-                                                        borderRadius: '12px',
-                                                        backgroundColor: 'rgba(255, 255, 255, 0.7)',
-                                                        '&:hover': {
-                                                            backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                                                        },
-                                                        '&.Mui-focused': {
-                                                            backgroundColor: 'rgba(255, 255, 255, 1)',
-                                                        },
-                                                    },
-                                                }}
                                             />
                                         </Grid>
 
@@ -256,18 +233,6 @@ const LoginComponent: React.FC = () => {
                                                 placeholder='masukan "password"'
                                                 label='Password'
                                                 fullWidth
-                                                sx={{
-                                                    '& .MuiOutlinedInput-root': {
-                                                        borderRadius: '12px',
-                                                        backgroundColor: 'rgba(255, 255, 255, 0.7)',
-                                                        '&:hover': {
-                                                            backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                                                        },
-                                                        '&.Mui-focused': {
-                                                            backgroundColor: 'rgba(255, 255, 255, 1)',
-                                                        },
-                                                    },
-                                                }}
                                             />
                                         </Grid>
                                     </Grid>
@@ -327,7 +292,6 @@ const LoginComponent: React.FC = () => {
                 </Fade>
             </Container>
 
-            {/* Custom animations */}
             <style jsx>{`
                 @keyframes gentleFloat {
                     0%, 100% {
